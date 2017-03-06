@@ -1,0 +1,69 @@
+body, html{
+	font-family: sans-serif;
+	width: 100%;
+	height: 100%;
+	display: table;
+}
+
+#mainArea{
+	width: 100%;
+	height: 100%;
+	display: flex;
+}
+
+#leftBox{
+	color: white;
+	text-align: center;
+	flex: 1;
+	/* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#45484d+0,000000+100;Black+3D+%231 */
+background: rgb(69,72,77); /* Old browsers */
+background: -moz-linear-gradient(top,  rgba(69,72,77,1) 0%, rgba(0,0,0,1) 100%); /* FF3.6-15 */
+background: -webkit-linear-gradient(top,  rgba(69,72,77,1) 0%,rgba(0,0,0,1) 100%); /* Chrome10-25,Safari5.1-6 */
+background: linear-gradient(to bottom,  rgba(69,72,77,1) 0%,rgba(0,0,0,1) 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#45484d', endColorstr='#000000',GradientType=0 ); /* IE6-9 */
+
+	display: flex;
+	padding: 10px;
+}
+
+#formBox{
+	width: 100%;
+	margin:auto;
+}
+
+#formBox img{
+	width: 200px;
+}
+
+#rightBox{
+	flex: 3;
+	display: flex;
+	flex-direction: column;
+
+}
+
+#imageBox{
+	background-color: green;
+	background-image: url('../images/trainpic.jpg');
+	background-size: cover;
+	flex: 1;
+	padding: 40px;
+	margin:auto;
+	width: 100%;
+	text-align: center;
+}
+
+#logoText{
+	font-size: 4vw;
+	color: white;
+	text-shadow: 0px 0px 15px #22e4ff;
+
+}
+
+#bottomBox{
+	background-color: #f7f7f7;
+	flex: 4;
+	padding: 40px;
+	margin:auto;
+	width: 100%;
+}
