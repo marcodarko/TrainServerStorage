@@ -2,27 +2,28 @@
 <!DOCTYPE html>
 <!-- sets language -->
 <html lang="en-us">
-	<head>
-		<!-- loads RESET CSS style sheet that set starting values for all browsers -->
-		<link rel="stylesheet" type="text/css" href="css/reset.css">
-		<!-- loads style sheet -->
-		<link rel="stylesheet" type="text/css" href="css/style.css">
-		<!-- loads bootstrap -->
-		 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-		<!-- loads in bootstrp js -->
-		  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-		<!-- loads jquery -->
-		<script src="https://code.jquery.com/jquery.js"></script>
-		<!-- Firebase Reference -->
-		  <script src="https://www.gstatic.com/firebasejs/live/3.0/firebase.js"></script>
-		  <!-- Favicon -->
-		  <link rel="icon" type="image/png" href="http://files.softicons.com/download/web-icons/awt-travel-blue-icons-by-awt-media/png/200x200/AWT-Train.png" sizes="32x32" />
+<head>
+	<!-- loads RESET CSS style sheet that set starting values for all browsers -->
+	<link rel="stylesheet" type="text/css" href="css/reset.css">
+	<!-- loads style sheet -->
+	<link rel="stylesheet" type="text/css" href="css/style.css">
+	<!-- loads jquery -->
+	<script src="https://code.jquery.com/jquery.js"></script>
+	<!-- loads bootstrap -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+	<!-- loads in bootstrp js -->
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	
+	<!-- Firebase Reference -->
+	<script src="https://www.gstatic.com/firebasejs/live/3.0/firebase.js"></script>
+	<!-- Favicon -->
+	<link rel="icon" type="image/png" href="http://files.softicons.com/download/web-icons/awt-travel-blue-icons-by-awt-media/png/200x200/AWT-Train.png" sizes="32x32" />
 
-		<meta charset="utf-8">
-		<!-- Tells different screen sizes to use relative size -->
-		<meta name="viewport" content="width=device-width, initial-scale=1">
-			<title>Train Schedule</title>
-	</head>
+	<meta charset="utf-8">
+	<!-- Tells different screen sizes to use relative size -->
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Train Schedule</title>
+</head>
 
 <body>
 
@@ -36,23 +37,23 @@
 				<h2>Add a Train</h2>
 				<br>
 				<div class="input-group">
-				  <span class="input-group-addon" id="sizing-addon2">1</span>
-				  <input type="text" class="form-control" placeholder="Train Name" aria-describedby="sizing-addon2">
+					<span class="input-group-addon" id="sizing-addon2">1</span>
+					<input  id="nameInput" type="text" class="form-control" placeholder="Train Name" aria-describedby="sizing-addon2">
 				</div>
 				<br>
 				<div class="input-group">
-				  <span class="input-group-addon" id="sizing-addon2">2</span>
-				  <input type="text" class="form-control" placeholder="Destination" aria-describedby="sizing-addon2">
+					<span class="input-group-addon" id="sizing-addon2">2</span>
+					<input id="destinationInput" type="text" class="form-control" placeholder="Destination" aria-describedby="sizing-addon2">
 				</div>
 				<br>
 				<div class="input-group">
-				  <span class="input-group-addon" id="sizing-addon2">3</span>
-				  <input type="text" class="form-control" placeholder="First Train Time HH:mm" aria-describedby="sizing-addon2">
+					<span class="input-group-addon" id="sizing-addon2">3</span>
+					<input id="firstTrainInput" type="text" class="form-control" placeholder="First Train Time HH:mm" aria-describedby="sizing-addon2">
 				</div>
 				<br>
 				<div class="input-group">
-				  <span class="input-group-addon" id="sizing-addon2">4</span>
-				  <input type="text" class="form-control" placeholder="Frequency (min)" aria-describedby="sizing-addon2">
+					<span class="input-group-addon" id="sizing-addon2">4</span>
+					<input id="frequencyInput" type="text" class="form-control" placeholder="Frequency (min)" aria-describedby="sizing-addon2">
 				</div>
 				<br>
 				<button id="submitButton" class="btn btn-md btn-primary">Submit</button>
@@ -66,25 +67,27 @@
 			</div>
 			<div id="bottomBox">
 				<div class="panel panel-primary">
-				  <!-- Default panel contents -->
-				  <div class="panel-heading">Current Train Schedule</div>
+					<!-- Default panel contents -->
+					<div class="panel-heading">Current Train Schedule</div>
 
-				  <!-- Table -->
-				  <table class="table">
-				    <thead>
-				    	<th>Train Name</th>
-				    	<th>Destination</th>
-				    	<th>Frequency</th>
-				    	<th>Next Arrival</th>
-				    	<th>Minutes Away</th>
-				    </thead>
-				  </table>
+					<!-- Table -->
+					<table class="table">
+						<thead>
+							<th>Train Name</th>
+							<th>Destination</th>
+							<th>Frequency</th>
+							<th>Next Arrival</th>
+							<th>Minutes Away</th>
+						</thead>
+					</table>
 				</div>
 			</div>
 		</section>
 	</article>
 	<!-- loads in external JS file -->
 	<script type="text/javascript" src="js/main.js"></script>
+	<!-- load moment js -->
+	<script type="text/javascript" src="js/moment.js"></script>
 </body>
 
 </html>
