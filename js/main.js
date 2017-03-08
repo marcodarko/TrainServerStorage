@@ -47,9 +47,12 @@ var initialTrainList=[
 ];
 
 
-// function that pushes array of objects to database
 // @NOTICE: This should only run once
 
+pushArrayDatabase(initialTrainList);
+
+
+// function that pushes array of objects to database
 
 function pushArrayDatabase(arr){
 	for(var i=0; i<arr.length; i++){
@@ -58,27 +61,52 @@ function pushArrayDatabase(arr){
 	}
 };
 
+//  calculates mins away by taking in current time minus next arrival
+function minsAway(nextArrival){
+
+	var mins= moment().diff(nextArrival);
+
+	return mins;
+
+};
+
+// calculates next arrival by checking that next arrival is not less than current time
+// if it is it'll add the train's frequency until it it greater than current time
+// when it stops that will be the next train arrival
+
+function nextTrainArrival(snapshot){
+
+	var nextArrival = snapshot.val().trainFirstDeparture;
+
+	while(moment(nextArrival) < moment() ){
+		nextArrival.add(snapshot.val().trainFrequency);
+	}
+
+	return nextArrival;
+};
+
+
 
 // Call this when you receive data from the db and need to populate your table.
 function populateTable(snapshot){
 
-	console.log("Current child received: "+snapshot.val());
 
 	var trainRow = $("<tr>");
 	trainRow.append($("<td>").html(snapshot.val().trainName));
 	trainRow.append($("<td>").html(snapshot.val().trainDestination));
 
 
-	trainRow.append($("<td>").html(snapshot.val().trainFrequency));
+	trainRow.append($("<td>").html(snapshot.val().trainFrequency+" Mins"));
 
-	var nextTrain = 7;
-	trainRow.append($("<td>").html( nextTrain ));
+	var x= nextTrainArrival(snapshot);
+	
+	trainRow.append($("<td>").html( x ));
 
-	var minsAway =5;
+	var z= minsAway(x);
 
-	trainRow.append($("<td>").html( minsAway ));
+	trainRow.append($("<td>").html( z ));
 
-	$(".table").append(trainRow);
+	$(".tableBody").append(trainRow).hide().fadeIn(1000);
 
 
 };
@@ -97,10 +125,7 @@ database.ref().on("child_added", function(snapshot){
 
 database.ref().on("value", function(snapshot) {
 
-	console.log(snapshot.val());
-
-
-
+	
 
 	
 
@@ -115,9 +140,9 @@ database.ref().on("value", function(snapshot) {
 
 // if the submit button is clicked do this
 
-
-
 $("#submitButton").on("click", function(event){
+
+	$(this).animate({opacity: 1}, 1000)
 
 	// preventing default page reload
 	event.preventDefault();
