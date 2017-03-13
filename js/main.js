@@ -64,45 +64,38 @@ function pushArrayDatabase(arr){
 //  calculates mins away by taking in current time minus next arrival
 function minsAway(nextArrival){
 
-	console.log("incoming data to minsAway: "+ nextArrival);
+	var currentTime= moment().unix();
+	console.log("MA Current time in secs: "+currentTime);
 
-	var nextArrivalInput =moment(nextArrival, 'HH:mm');
-	console.log("incoming coverted to secs: "+ nextArrivalInput);
+	console.log("database FD: "+nextArrival.val().trainFirstDeparture);
 
-	var next= nextArrivalInput.toNow();
+	var freq = moment(nextArrival.val().trainFrequency, 'mm').unix();
+	console.log("Frequency in secs: "+freq);
 
-	console.log("next is: "+ next);
+	var FirstDeparture= moment(nextArrival.val().trainFirstDeparture, 'mm').unix();
+	console.log("First departure in secs: "+freq);
 
-	return next;
+	// need to get secs since initial departure
+	var secsSinceFirstD= moment(FirstDeparture, 's').diff(currentTime, 's');
+	console.log("Secs since First departure: "+secsSinceFirstD);
+
+	var result= secsSinceFirstD % freq;
+	console.log("Modulus result in secs: "+result);
+	console.log("++++++++++++++++++++++++");
+
+	return result;
 
 };
 
-// calculates next arrival by checking that next arrival is not less than current time
-// if it is it'll add the train's frequency until it it greater than current time
-// when it stops that will be the next train arrival
 
-function nextTrainArrival(snapshot){
 
-	// converting everything to secs for easy comparison
+function nextTrainArrival(SecondsAway){
 
-	var firstDeparture = moment(snapshot.val().trainFirstDeparture, 'HH:mm');
-	console.log("Trains first departure of the day: "+ firstDeparture);
+	var currentTime= moment().unix();
+	console.log("NTA Current time in secs: "+currentTime);
 
-	// current time stamp
-	var rightNow= moment().unix();
-	console.log("time right now: "+rightNow);
-
-	// train frequecy
-	var freq =moment(snapshot.val().trainFrequency, 'm');
-	console.log("train freq: "+freq);
-
-	// while first departurte is less than current time add train's frequency
-	while(firstDeparture < rightNow ){
-		firstDeparture.add(freq);
-	}
-
-	// next arrival that is under current time
-	var result= moment(firstDeparture, 'X').format('HH:mm');
+	var result= moment(currentTime, 's').add(SecondsAway, 's').format('hh:mm');
+	console.log("Next train arrival in secs: "+result);
 
 	return result;
 };
@@ -120,13 +113,12 @@ function populateTable(snapshot){
 
 	trainRow.append($("<td>").html(snapshot.val().trainFrequency+" Mins"));
 
-	var x= nextTrainArrival(snapshot);
+	var z= minsAway(snapshot);
+	var x= nextTrainArrival( z );
 	
 	trainRow.append($("<td>").html( x ));
 
-	var z= minsAway(x);
-
-	trainRow.append($("<td>").html( z ));
+	trainRow.append($("<td>").html( (z/60)+" mins" ));
 
 	$(".tableBody").append(trainRow).hide().fadeIn(1000);
 

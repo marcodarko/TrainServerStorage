@@ -48,6 +48,10 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#45484d', end
 
 }
 
+.tableBody tr:nth-child(odd){
+	background-color: #e2e2e2;
+}
+
 #imageBox{
 	background-color: green;
 	background-image: url('../images/trainpic.jpg');
