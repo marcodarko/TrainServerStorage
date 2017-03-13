@@ -5,6 +5,12 @@ body, html{
 	display: table;
 }
 
+@font-face {
+    font-family: fontAvenue;
+    src: url(../images/AnimalTypeFaces.ttf);
+    
+}
+
 #mainArea{
 	width: 100%;
 	height: 100%;

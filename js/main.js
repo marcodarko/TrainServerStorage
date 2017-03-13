@@ -23,25 +23,25 @@ var initialTrainList=[
 {
 	trainName: "Polar Express",
 	trainDestination: "NorthPole",
-	trainFrequency: 36,
+	trainFrequency: "36",
 	trainFirstDeparture: "7:00"
 },
 {
 	trainName: "Marco Express",
 	trainDestination: "California",
-	trainFrequency: 5,
+	trainFrequency: "5",
 	trainFirstDeparture: "6:00"
 },
 {
 	trainName: "NY Express",
 	trainDestination: "New York",
-	trainFrequency: 21,
+	trainFrequency: "21",
 	trainFirstDeparture: "5:00"
 },
 {
 	trainName: "LA Express",
 	trainDestination: "Los Angeles",
-	trainFrequency: 20,
+	trainFrequency: "20",
 	trainFirstDeparture: "6:30"
 }
 ];
@@ -64,9 +64,16 @@ function pushArrayDatabase(arr){
 //  calculates mins away by taking in current time minus next arrival
 function minsAway(nextArrival){
 
-	var mins= moment().diff(nextArrival);
+	console.log("incoming data to minsAway: "+ nextArrival);
 
-	return mins;
+	var nextArrivalInput =moment(nextArrival, 'HH:mm');
+	console.log("incoming coverted to secs: "+ nextArrivalInput);
+
+	var next= nextArrivalInput.toNow();
+
+	console.log("next is: "+ next);
+
+	return next;
 
 };
 
@@ -76,13 +83,28 @@ function minsAway(nextArrival){
 
 function nextTrainArrival(snapshot){
 
-	var nextArrival = snapshot.val().trainFirstDeparture;
+	// converting everything to secs for easy comparison
 
-	while(moment(nextArrival) < moment() ){
-		nextArrival.add(snapshot.val().trainFrequency);
+	var firstDeparture = moment(snapshot.val().trainFirstDeparture, 'HH:mm');
+	console.log("Trains first departure of the day: "+ firstDeparture);
+
+	// current time stamp
+	var rightNow= moment().unix();
+	console.log("time right now: "+rightNow);
+
+	// train frequecy
+	var freq =moment(snapshot.val().trainFrequency, 'm');
+	console.log("train freq: "+freq);
+
+	// while first departurte is less than current time add train's frequency
+	while(firstDeparture < rightNow ){
+		firstDeparture.add(freq);
 	}
 
-	return nextArrival;
+	// next arrival that is under current time
+	var result= moment(firstDeparture, 'X').format('HH:mm');
+
+	return result;
 };
 
 
@@ -142,8 +164,6 @@ database.ref().on("value", function(snapshot) {
 
 $("#submitButton").on("click", function(event){
 
-	$(this).animate({opacity: 1}, 1000)
-
 	// preventing default page reload
 	event.preventDefault();
 
@@ -152,10 +172,9 @@ var input1= $("#nameInput").val();
 var input2= $("#destinationInput").val();
 var input3= $("#frequencyInput").val();
 var input4= $("#firstTrainInput").val();
-// turn input 4 into interger for evaluation
-input4= parseInt(input4);
 
-if(moment(input3).format() === moment.format('HH:mm') && input4 === typeof "number"){
+
+if(moment(input3, "HH:mm").format() === moment.format('HH:mm') ){
 		// empty train object gets populated by input
 		var newTrain={
 			trainName: $("#nameInput").val(),
@@ -165,6 +184,7 @@ if(moment(input3).format() === moment.format('HH:mm') && input4 === typeof "numb
 		}
 		// object containing all new data pushed to database
 		database.push(newTrain);
+
 
 		// input fields cleared
 		var input1= $("#nameInput").val(" ");
