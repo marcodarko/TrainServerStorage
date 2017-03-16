@@ -18,181 +18,89 @@ firebase.initializeApp(config);
 var database = firebase.database();
 
 
-// initial train list
-var initialTrainList=[
-{
-	trainName: "Polar Express",
-	trainDestination: "NorthPole",
-	trainFrequency: "36",
-	trainFirstDeparture: "7:00"
-},
-{
-	trainName: "Marco Express",
-	trainDestination: "California",
-	trainFrequency: "5",
-	trainFirstDeparture: "6:00"
-},
-{
-	trainName: "NY Express",
-	trainDestination: "New York",
-	trainFrequency: "21",
-	trainFirstDeparture: "5:00"
-},
-{
-	trainName: "LA Express",
-	trainDestination: "Los Angeles",
-	trainFrequency: "20",
-	trainFirstDeparture: "6:30"
-}
-];
+// ++++++++++++++++++ 
+
+var trainName = "";
+var destination = "";
+var firstTrainTime = "";
+var frequency = 0;
 
 
-// @NOTICE: This should only run once
+// FUNCTIONS + EVENTS
+$("#submitButton").on("click", function() {
 
-pushArrayDatabase(initialTrainList);
+// when clicked we take the values from each input field
+// and trim any white space before or after
+  trainName = $('#nameInput').val().trim();
+  destination = $('#destinationInput').val().trim();
+  firstTrainTime = $('#firstTrainInput').val().trim();
+  frequency = $('#frequencyInput').val().trim();
 
+console.log("Your Train's info: ");
+  console.log(trainName);
+  console.log(destination);
+  console.log(firstTrainTime);
+  console.log(frequency);
 
-// function that pushes array of objects to database
+  // take all the values from user and push them as an object to the DB
 
-function pushArrayDatabase(arr){
-	for(var i=0; i<arr.length; i++){
-		// push current index object
-		database.ref().push(arr[i]);
-	}
-};
-
-//  calculates mins away by taking in current time minus next arrival
-function minsAway(nextArrival){
-
-	var currentTime= moment().unix();
-	console.log("MA Current time in secs: "+currentTime);
-
-	console.log("database FD: "+nextArrival.val().trainFirstDeparture);
-
-	var freq = moment(nextArrival.val().trainFrequency, 'mm').unix();
-	console.log("Frequency in secs: "+freq);
-
-	var FirstDeparture= moment(nextArrival.val().trainFirstDeparture, 'mm').unix();
-	console.log("First departure in secs: "+freq);
-
-	// need to get secs since initial departure
-	var secsSinceFirstD= moment(FirstDeparture, 's').diff(currentTime, 's');
-	console.log("Secs since First departure: "+secsSinceFirstD);
-
-	var result= secsSinceFirstD % freq;
-	console.log("Modulus result in secs: "+result);
-	console.log("++++++++++++++++++++++++");
-
-	return result;
-
-};
-
-
-
-function nextTrainArrival(SecondsAway){
-
-	var currentTime= moment().unix();
-	console.log("NTA Current time in secs: "+currentTime);
-
-	var result= moment(currentTime, 's').add(SecondsAway, 's').format('hh:mm');
-	console.log("Next train arrival in secs: "+result);
-
-	return result;
-};
-
-
-
-// Call this when you receive data from the db and need to populate your table.
-function populateTable(snapshot){
-
-
-	var trainRow = $("<tr>");
-	trainRow.append($("<td>").html(snapshot.val().trainName));
-	trainRow.append($("<td>").html(snapshot.val().trainDestination));
-
-
-	trainRow.append($("<td>").html(snapshot.val().trainFrequency+" Mins"));
-
-	var z= minsAway(snapshot);
-	var x= nextTrainArrival( z );
-	
-	trainRow.append($("<td>").html( x ));
-
-	trainRow.append($("<td>").html( (z/60)+" mins" ));
-
-	$(".tableBody").append(trainRow).hide().fadeIn(1000);
-
-
-};
-
-
-// Query for records from the DB.
-database.ref().on("child_added", function(snapshot){
-
-	populateTable(snapshot);
-
+  database.ref().push({
+    trainName: trainName,
+    destination: destination,
+    firstTrainTime: firstTrainTime,
+    frequency: frequency
+  });
+// clear input fields
+    return false;
 });
 
 
+//every time an object is added...
+database.ref().on("child_added", function(snapshot) {
+	// database.ref is the ROOT folder
+  console.log(snapshot.val());
+
+  // save input in a variable 
+  // .val interprets the data fro DB in object form 
+
+  trainName = snapshot.val().trainName;
+  destination = snapshot.val().destination;
+  firstTrainTime = snapshot.val().firstTrainTime;
+  frequency = snapshot.val().frequency;
+
+// gets the current time in hour minute format
+  var firstTrainMoment = moment(firstTrainTime, 'hh:mm');
+  // time stamp of the momemnt right now
+  var nowMoment = moment(); 
+// returns difference between now and first train in minutes
+  var minutesSinceFirstArrival = nowMoment.diff(firstTrainMoment, 'minutes');
+  // gives the remainder of the division
+  var minutesSinceLastArrival = minutesSinceFirstArrival % frequency;
+  // minutes away
+  var minutesAway = frequency - minutesSinceLastArrival;
+// nest arrival will be the current time plus minutes away
+  var nextArrival = nowMoment.add(minutesAway, 'minutes');
+  // formattin the time to a readable format
+  var formatNextArrival = nextArrival.format("hh:mm");
 
 
+  // add table
+  var myRow = $('<tr>');
+  var tName = $('<td>').html(trainName);
+  var tDestination = $('<td>').html(destination);
+  var tFrequency = $('<td>').html(frequency);
+  var tNextArrival = $('<td>').html(formatNextArrival);
+  var tMinutesAway = $('<td>').html(minutesAway);
 
-database.ref().on("value", function(snapshot) {
-
-	
-
-	
-
-},function(errorObject) {
-
-	console.log("The read failed: " + errorObject.code);
-	$("#bottomBox").html("<h1>Error Loading trains</h1>");
-
-});
-
+// appending everythign into a row
+  myRow.append(tName).append(tDestination).append(tFrequency).append(tNextArrival).append(tMinutesAway);
+// adding a row to my table body
+  $('.tableBody').append(myRow);
 
 
-// if the submit button is clicked do this
-
-$("#submitButton").on("click", function(event){
-
-	// preventing default page reload
-	event.preventDefault();
-
-// inputs get stored for evaluation
-var input1= $("#nameInput").val();
-var input2= $("#destinationInput").val();
-var input3= $("#frequencyInput").val();
-var input4= $("#firstTrainInput").val();
-
-
-if(moment(input3, "HH:mm").format() === moment.format('HH:mm') ){
-		// empty train object gets populated by input
-		var newTrain={
-			trainName: $("#nameInput").val(),
-			trainDestination: $("#destinationInput").val(),
-			trainFrequency: $("#frequencyInput").val(),
-			trainFirstDeparture: $("#firstTrainInput").val()
-		}
-		// object containing all new data pushed to database
-		database.push(newTrain);
-
-
-		// input fields cleared
-		var input1= $("#nameInput").val(" ");
-		var input2= $("#destinationInput").val(" ");
-		var input3= $("#frequencyInput").val(" ");
-		var input4= $("#firstTrainInput").val(" ");
-	}
-
-	// if input was not valid do this
-
-	else{
-	// invalid imput message
-	prompt("You must enter a valid HH:mm format and frequency");
-	return false;
-
-}
+  }, function (errorObject) {
+// if everything fails
+    console.log("The read failed: " + errorObject.code);
 
 });
 
