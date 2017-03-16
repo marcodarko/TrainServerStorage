@@ -95,7 +95,7 @@ database.ref().on("child_added", function(snapshot) {
 // appending everythign into a row
   myRow.append(tName).append(tDestination).append(tFrequency).append(tNextArrival).append(tMinutesAway);
 // adding a row to my table body
-  $('.tableBody').append(myRow);
+  $('.tableBody').append(myRow).hide().fadeIn(1000);
 
 
   }, function (errorObject) {
